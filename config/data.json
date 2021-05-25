@@ -1,0 +1,60 @@
+{
+    "users": [
+        {
+            "_id": "6075029f746e3f38a5f0e947",
+            "name": "Michael Scott",
+            "username": "bossMan",
+            "password": "password1",
+            "bio": "I want people to be afraid of how much they love me",
+            "friends": ["6075029f746e3f38a5f0e948", "6075029f746e3f38a5f0e949"],
+            "ratings": ["607502a0746e3f38a5f0e954"]
+        },
+        {
+            "_id": "6075029f746e3f38a5f0e948",
+            "name": "Dwight Schrute",
+            "username": "manager2",
+            "password": "password2",
+            "bio": "Lackawanna County volunteer sheriff's deputy",
+            "friends": ["6075029f746e3f38a5f0e947", "6075029f746e3f38a5f0e949"],
+            "ratings": ["607502a0746e3f38a5f0e957", "607502a0746e3f38a5f0e95d"]
+        },
+        {
+            "_id": "6075029f746e3f38a5f0e949",
+            "name": "Jim Halpert",
+            "username": "sportsFan",
+            "password": "password3",
+            "friends": ["6075029f746e3f38a5f0e947", "6075029f746e3f38a5f0e948" ],
+            "ratings": ["607502a0746e3f38a5f0e958"]
+        }
+    ],
+    "ratings" : [
+        {
+            "_id": "607502a0746e3f38a5f0e954",
+            "value": 5,
+            "review": "Great boss, and even better friend",
+            "from": "6075029f746e3f38a5f0e948",
+            "to" : "6075029f746e3f38a5f0e947"
+        },
+        {
+            "_id": "607502a0746e3f38a5f0e957",
+            "value": 1,
+            "review": "Do I even need to say anything",
+            "from": "6075029f746e3f38a5f0e949",
+            "to": "6075029f746e3f38a5f0e948"
+        },
+        {
+            "_id": "607502a0746e3f38a5f0e958",
+            "value": 5,
+            "review": "The best salesman",
+            "from": "6075029f746e3f38a5f0e947",
+            "to": "6075029f746e3f38a5f0e949"
+        },
+        {
+            "_id": "607502a0746e3f38a5f0e95d",
+            "value": 4,
+            "review": "Solid assistant to the regional manager",
+            "from": "6075029f746e3f38a5f0e947",
+            "to": "6075029f746e3f38a5f0e948"
+        }
+    ]
+}
