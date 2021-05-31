@@ -10,6 +10,7 @@ const router = express.Router();
 
 require("dotenv").config()
 const jwt = require("jsonwebtoken");
+const { isValidObjectId } = require("mongoose");
 
 
 // completely resets your database.
@@ -84,7 +85,7 @@ router.route("/login")
         // chelly added this idk if this is allowed but i need this for login lol
         res.status(200).send({
             accessToken: token,
-            ...user
+             ...user
         });
         console.log("token", token)
 
@@ -125,6 +126,46 @@ router.route("/signup")
                 })
         }
 
+    })
+
+router.route("/reviews")
+    .post((req, res) => {
+        console.log("POST /reviews");
+        const value = req.body.value;
+        const review = req.body.review;
+        const from = req.body.from;
+        const to = req.body.to;
+        const newReview = {
+            "value" : value,
+            "review" : review,
+            "from" : from,
+            "to" : to
+        };
+        Rating.create(newReview).save()
+            .then(async newReview => {
+                let tmp = await User.findOneAndUpdate(
+                    {"_id" : to},
+                    {$push: {ratings : newReview.id}}
+                )
+                res.status(201).send(newReview);
+            })
+    })
+
+router.route("/reviews/:id")
+    .get(async (req, res) => {
+        console.log(`GET /reviews/${req.params.id}`);
+        const id = req.params.id;
+        let valueSum = 0;
+        let reviews = await Rating.find({to: id});
+        reviews.forEach(r => {
+            valueSum += r.value;
+        })
+        const avgRating = valueSum / reviews.length;
+        const data = {
+            "avgRating" : avgRating,
+            "reviews" : reviews
+        };
+        res.status(200).send(data);
     })
 
 
