@@ -81,7 +81,7 @@ router.route("/login")
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '600s' }
         );
-        
+
         // chelly added this idk if this is allowed but i need this for login lol
         res.status(200).send({
             accessToken: token,
@@ -115,7 +115,10 @@ router.route("/signup")
             var user = {
                 username: username,
                 password: password,
-                name: name
+                name: name,
+                friends: [],
+                ratings: [],
+                requests: []
             };
             if (req.body.bio) {
                 user.bio = req.body.bio;
@@ -166,6 +169,27 @@ router.route("/reviews/:id")
             "reviews" : reviews
         };
         res.status(200).send(data);
+    })
+
+router.route("/requests/:id")
+    .get(async (req, res) => {
+        console.log(`GET /requests/${req.params.id}`);
+        const id = req.params.id;
+        let user = await Rating.find({_id: id});
+        if (!user){
+            res.status(404).send({
+                "Message" : "User not found."
+            });
+        }
+        let requests = user.requests;
+        if (requests){
+            res.status(200).send(requests);
+        }
+        else{
+            res.status(200).send({
+                "Message" : "No friend requests at this time."
+            });
+        }
     })
 
 
