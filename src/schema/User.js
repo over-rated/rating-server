@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     friends: [{
         type: Schema.Types.ObjectId,
         ref: "User"
-    }], 
+    }],
     username: {
         type: Schema.Types.String,
         required: true
@@ -26,6 +26,10 @@ const UserSchema = new Schema({
     ratings: [{
         type: Schema.Types.ObjectId,
         ref: "Rating"
+    }],
+    requests: [{
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }]
 });
 
