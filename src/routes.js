@@ -154,6 +154,20 @@ router.route("/reviews")
             })
     })
 
+router.route("/friends/:id")
+    .get(async (req, res) => {
+        console.log(`GET /friends/${req.params.id}`);
+        const id = req.params.id;
+        let user = await User.find({_id: id});
+        if (!user){
+            res.status(404).send({
+                "Message" : "User not found."
+            });
+            return;
+        }
+        res.status(200).send(user.friends);
+    })
+
 router.route("/reviews/:id")
     .get(async (req, res) => {
         console.log(`GET /reviews/${req.params.id}`);
@@ -175,11 +189,12 @@ router.route("/requests/:id")
     .get(async (req, res) => {
         console.log(`GET /requests/${req.params.id}`);
         const id = req.params.id;
-        let user = await Rating.find({_id: id});
+        let user = await User.find({_id: id});
         if (!user){
             res.status(404).send({
                 "Message" : "User not found."
             });
+            return;
         }
         let requests = user.requests;
         if (requests){
@@ -190,6 +205,100 @@ router.route("/requests/:id")
                 "Message" : "No friend requests at this time."
             });
         }
+    })
+    .post(async (req, res) => {
+        console.log(`POST /requests/${req.params.id}`);
+        let body = req.body;
+        let to = body.to;
+
+        let fromUser = await User.find({_id: req.params.id})
+        .then(user => {
+            User.findOneAndUpdate(
+                {"_id" : to},
+                {$push: {requests: req.params.id}},
+                {new: true}
+            )
+            .then(newToUser => {
+                res.status(200).send({
+                    "Message" : "Request sent."
+                });
+            })
+            .catch(err => {
+                res.status(404).send({
+                    "Message" : "User not found."
+                })
+            })
+        })
+        .catch(err => {
+            res.status(404).send({
+                "Message" : "Could not find user."
+            })
+            return;
+        });
+    })
+
+// user1 should be the current profile logged in
+router.route("/handleRequest")
+    .post(async (req, res) => {
+        console.log(`POST /handleRequest`);
+        let body = req.body;
+        let userId1 = body.userId1;
+        let userId2 = body.userId2;
+
+        let user1 = await User.find({_id: userId1});
+        let user2 = await User.find({_id: userId2});
+        if (!user1 || !user2){
+            res.status(404).send({
+                "Message" : "One or more users not found."
+            });
+            return;
+        }
+        let user1Friends;
+
+        let tmp2 = await User.findOneAndUpdate(
+            {"_id" : userId2},
+            {$push: {friends : userId1}}
+        );
+
+        let tmp1 = await User.findOneAndUpdate(
+            {"_id" : userId1},
+            {$push: {friends : userId2}, $pull: {requests: userId2}},
+            {new: true}
+        )
+        .then(async newUser1 => {
+            res.status(200).send({
+                "friends" : newUser1.friends,
+                "requests" : newUser1.requests
+            });
+        });
+
+    })
+    .delete(async (req, res) => {
+        console.log(`DELETE /handleRequest`);
+
+        let body = req.body;
+        let userId1 = body.userId1;
+        let userId2 = body.userId2;
+
+        let user1 = await User.find({_id: userId1});
+        let user2 = await User.find({_id: userId2});
+        if (!user1 || !user2){
+            res.status(404).send({
+                "Message" : "One or more users not found."
+            });
+            return;
+        }
+
+        let tmp1 = await User.findOneAndUpdate(
+            {"_id" : userId1},
+            {$pull: {requests: userId2}},
+            {new: true}
+        )
+        .then(newUser1 => {
+            res.status(200).send({
+                "requests" : newUser1.requests
+            });
+        });
     })
 
 
