@@ -196,9 +196,9 @@ router.route("/requests/:id")
             });
             return;
         }
-        console.log(user);
+        
         let requests = user.requests;
-        console.log(requests);
+
         if (requests){
             res.status(200).send(requests);
         }
