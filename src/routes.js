@@ -189,14 +189,16 @@ router.route("/requests/:id")
     .get(async (req, res) => {
         console.log(`GET /requests/${req.params.id}`);
         const id = req.params.id;
-        let user = await User.find({_id: id});
+        let user = await User.findOne({_id: id});
         if (!user){
             res.status(404).send({
                 "Message" : "User not found."
             });
             return;
         }
+        console.log(user);
         let requests = user.requests;
+        console.log(requests);
         if (requests){
             res.status(200).send(requests);
         }
